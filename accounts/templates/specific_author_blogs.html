@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your Blog</title>
+    <!-- Add your CSS styles or link to an external stylesheet here -->
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        background-color: #f2f2f2;
+      }
+
+      .container {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        box-sizing: border-box;
+        border: 1px solid #3498db;
+        border-radius: 4px;
+      }
+
+      .filter-buttons {
+        width: 20%;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-buttons button {
+        display: block;
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        background-color:green;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      .filter-buttons button:hover {
+        background-color: black;
+      }
+
+      .blog-content {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .blog-post {
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .blog-post img {
+        width: 100%;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .blog-post h2 {
+        color: #333;
+      }
+
+      .blog-post p {
+        color: #777;
+      }
+
+      /* Modal styles */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.7);
+      }
+
+      .modal-content {
+        background-color: #ffffff;
+        margin: 10% auto;
+        padding: 30px;
+        border: 1px solid #3498db; /* Change border color as desired */
+        width: 60%;
+        border-radius: 15px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        color: #333;
+      }
+
+      .close {
+        color: #e74c3c; /* Change close button color as desired */
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #c0392b; /* Change close button hover color as desired */
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      #modalContent {
+        font-size: 24px;
+        font-weight: bold;
+        color: green /* Change content color as desired */
+      }
+
+      #modalTitle {
+        font-size: 18px;
+        margin-top: 10px;
+        color: #333;
+      }
+
+      #modalAuthor {
+        margin-top: 15px;
+        color: #555;
+      }
+
+      #modalDate {
+        margin-top: 10px;
+        color: #777;
+      }
+      button {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: green;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      
+      button:hover {
+        background-color:red;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="filter-buttons">
+        <br />
+        <button onclick="showUserIdInput()">User TOP COMMENTS COUNT</button>
+        <br />
+        <button onclick="showUserIdInput2()">
+          TOP 5 comments blog of user
+        </button>
+        <br />
+        <button onclick="showTopBlogs()">
+          Show Top 5 Liked and Disliked Blogs
+        </button>
+        <br />
+        <button onclick="showUserIdInput3()">
+          Recent 5 liked blog of user
+        </button>
+        <br />
+        <button onclick="showUserIdInput4()">
+          Comment history of specific blogs
+        </button>
+        <br />
+        <button onclick="showUserIdInput5()">Comment history of author</button>
+      </div>
+      <br />
+
+      <div class="blog-content">
+        {% for blog in blogs_data %}
+        <div class="blog-post">
+          <h2>{{ blog.name }}</h2>
+          <p font-bold>{{ blog.content }}</p>
+          <p>Name:{{ blog.author }}</p>
+          <p> Creacte date:{{ blog.created_date }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div id="userIdInput" style="display: none">
+        <label for="userId">Enter User ID:</label>
+        <input type="text" id="userId" name="userId" required />
+        <button onclick="submitUserId(); hideUserIdInput()">Submit</button>
+      </div>
+
+      <div id="userIdInput2" style="display: none">
+        <label for="userId">Enter User ID:</label>
+        <input type="text" id="userId2" name="userId" required />
+        <button onclick="submitUserId2(); hideUserIdInput2()">Submit</button>
+      </div>
+
+      <div id="userIdInput3" style="display: none">
+        <label for="userId">Enter User ID:</label>
+        <input type="text" id="userId3" name="userId" required />
+        <button onclick="submitUserId3(); hideUserIdInput3()">Submit</button>
+      </div>
+
+      <div id="userIdInput4" style="display: none">
+        <label for="blogId">Enter blog ID:</label>
+        <input type="text" id="blogId" name="blogId" required />
+        <button onclick="submitUserId4(); hideUserIdInput4()">Submit</button>
+      </div>
+
+      <div id="userIdInput5" style="display: none">
+        <label for="userId">Enter Author ID:</label>
+        <input type="text" id="userId5" name="userId" required />
+        <button onclick="submitUserId5(); hideUserIdInput5()">Submit</button>
+      </div>
+    </div>
+
+    <div id="blogModal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h1 id="modalContent"></h1>
+        <h3 id="modalTitle"></h3>
+        <p id="modalAuthor"></p>
+        <p id="modalDate"></p>
+        <!-- Add more fields as needed -->
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+      function showUserIdInput() {
+        document.getElementById("userIdInput").style.display = "block";
+      }
+
+      function hideUserIdInput() {
+        document.getElementById("userIdInput").style.display = "none";
+      }
+
+      function submitUserId() {
+        var userId = document.getElementById("userId").value;
+        $.ajax({
+          type: "GET",
+          url: "{% url 'specific_author_blogs' %}",
+          data: { userId: userId },
+          success: function (response) {
+            console.log(response, "56565656565656");
+            hideUserIdInput();
+
+            if (response.blogs_data && response.blogs_data.length > 0) {
+              var blog = response.blogs_data[0];
+              console.log(blog, "89*865332326989626");
+              var modalTitle = document.getElementById("modalTitle");
+              console.log(modalTitle, "655565");
+              var modalContent = document.getElementById("modalContent");
+
+              // Access specific properties
+              var likesCount = blog.likes_count || 0;
+              var dislikesCount = blog.dislikes_count || 0;
+              var name = blog.name || "";
+
+              // Display the specific data
+              modalTitle.innerHTML =
+                "Likes: " + likesCount + ", Dislikes: " + dislikesCount;
+              modalContent.innerHTML = name;
+              modalAuthor.innerHTML = "";
+              modalDate.innerHTML = "";
+
+              // Display the modal
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error(
+                "Unexpected response structure: 'blogs_data' property not found or empty"
+              );
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+      function closeModal() {
+        document.getElementById("blogModal").style.display = "none";
+      }
+
+      ///////////////////////////
+
+      function showUserIdInput2() {
+        document.getElementById("userIdInput2").style.display = "block";
+      }
+
+      function hideUserIdInput2() {
+        document.getElementById("userIdInput2").style.display = "none";
+      }
+      function submitUserId2() {
+        var userId = document.getElementById("userId2").value;
+
+        $.ajax({
+          type: "GET",
+          url: "{% url 'get_top_commented_blogs' %}",
+          data: { userId: userId },
+          success: function (response) {
+            console.log(response, "56565656565656");
+            hideUserIdInput2(); // Corrected function name
+
+            if (
+              response.top_commented_blogs &&
+              response.top_commented_blogs.length > 0
+            ) {
+              // Assuming you're handling a single blog for now
+              var topCommentedBlog = response.top_commented_blogs[0];
+
+              // Populate the modal content with the data
+              var modalTitle = document.getElementById("modalTitle");
+              var modalContent = document.getElementById("modalContent");
+              var modalAuthor = document.getElementById("modalAuthor");
+              var modalDate = document.getElementById("modalDate");
+
+              // Use correct variable names here
+              modalTitle.innerHTML =
+                "comment count: " + topCommentedBlog.comment_count;
+              modalContent.innerHTML =
+                "Blogname: " + topCommentedBlog.blog__name;
+              modalAuthor.innerHTML = "";
+              modalDate.innerHTML = "";
+
+              // Display the modal
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error(
+                "Unexpected response structure: 'top_commented_blogs' property not found or empty"
+              );
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+
+      ////////////////////////////
+      function showTopBlogs() {
+        $.ajax({
+          type: "GET",
+          url: "{% url 'like_and_dislike' %}",
+          success: function (response) {
+            console.log(response);
+
+            if (response.top_liked_blogs && response.top_disliked_blogs) {
+              var modalTitle = document.getElementById("modalTitle");
+              var modalContent = document.getElementById("modalContent");
+
+              modalTitle.innerHTML = "";
+              modalContent.innerHTML = "";
+
+              for (var i = 0; i < response.top_liked_blogs.length; i++) {
+                modalContent.innerHTML +=
+                  "<p>" +
+                  "Top Liked Blogs:" +
+                  response.top_liked_blogs[i].name +
+                  "</p>";
+              }
+
+              for (var j = 0; j < response.top_disliked_blogs.length; j++) {
+                modalContent.innerHTML +=
+                  "<p>" +
+                  "Top Disliked Blogs:" +
+                  response.top_disliked_blogs[j].name +
+                  "</p>";
+              }
+
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error("Unexpected response structure");
+            }
+          },
+          error: function (error) {
+            console.error("AJAX Error:", error);
+          },
+        });
+      }
+
+      /////////////////////////////////////////////////////////
+      function showUserIdInput3() {
+        document.getElementById("userIdInput3").style.display = "block";
+      }
+
+      function hideUserIdInput3() {
+        document.getElementById("userIdInput3").style.display = "none";
+      }
+      function submitUserId3() {
+        var userId = document.getElementById("userId3").value;
+
+        // AJAX request
+        $.ajax({
+          type: "GET",
+          url: "{% url 'get_recent_liked_blogs' %}",
+          data: { userId: userId },
+          success: function (response) {
+            console.log(response);
+
+            if (response["recent_liked_blogs"]) {
+              var modalTitle = document.getElementById("modalTitle");
+              var modalContent = document.getElementById("modalContent");
+
+              modalTitle.innerHTML = "";
+              modalContent.innerHTML = "";
+
+              for (var i = 0; i < response["recent_liked_blogs"].length; i++) {
+                modalContent.innerHTML +=
+                  "<p>" +
+                  "Recent Liked Blogs:" +
+                  response["recent_liked_blogs"][i].name +
+                  "</p>";
+              }
+
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error("Unexpected response structure");
+            }
+          },
+          error: function (error) {
+            console.error("AJAX Error:", error);
+          },
+        });
+      }
+      //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+      function showUserIdInput4() {
+        document.getElementById("userIdInput4").style.display = "block";
+      }
+
+      function hideUserIdInput4() {
+        document.getElementById("userIdInput4").style.display = "none";
+      }
+      function submitUserId4() {
+        var blogId = document.getElementById("blogId").value;
+
+        $.ajax({
+          type: "GET",
+          url: "{% url 'get_comment_history' %}",
+          data: { blogId: blogId },
+          success: function (response) {
+            console.log(response, "56565656565656");
+            hideUserIdInput2();
+
+            var modalContent = document.getElementById("modalContent");
+
+            if (
+              response.comment_history &&
+              response.comment_history.length > 0
+            ) {
+              response.comment_history.forEach(function (comment) {
+                var commentText = document.createElement("p");
+                commentText.innerHTML = "Comment: " + comment.comment_text;
+
+                var createdDate = document.createElement("p");
+                createdDate.innerHTML = "Date: " + comment.created_date;
+
+                modalContent.appendChild(commentText);
+                modalContent.appendChild(createdDate);
+              });
+
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error(
+                "Unexpected response structure: 'comment_history' property not found or empty"
+              );
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+      //////////////////////////////////////////////////////////////////////////
+      function showUserIdInput5() {
+        document.getElementById("userIdInput5").style.display = "block";
+      }
+
+      function hideUserIdInput5() {
+        document.getElementById("userIdInput5").style.display = "none";
+      }
+      function submitUserId5() {
+        var userId = document.getElementById("userId5").value;
+
+        $.ajax({
+          type: "GET",
+          url: "{% url 'comment_history_view_author' %}",
+          data: { userId: userId },
+          success: function (response) {
+            console.log(response, "56565656565656");
+            hideUserIdInput2();
+
+            var modalContent = document.getElementById("modalContent");
+
+            if (
+              response.comment_history &&
+              response.comment_history.length > 0
+            ) {
+              response.comment_history.forEach(function (comment) {
+                var commentText = document.createElement("p");
+                commentText.innerHTML = "Comment: " + comment.comment_text;
+
+                var createdDate = document.createElement("p");
+                createdDate.innerHTML = "Date: " + comment.created_date;
+
+                modalContent.appendChild(commentText);
+                modalContent.appendChild(createdDate);
+              });
+
+              document.getElementById("blogModal").style.display = "block";
+            } else {
+              console.error(
+                "Unexpected response structure: 'comment_history' property not found or empty"
+              );
+            }
+          },
+          error: function (error) {
+            console.error("Error:", error);
+          },
+        });
+      }
+    </script>
+  </body>
+</html>
